@@ -1,0 +1,71 @@
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+# text mining library
+library(tidytext)
+library(readr)
+```
+
+## Load the dataset.
+```{r}
+Vodka <- read_csv("C:/Users/skill/Desktop/NCB/vodka.csv")
+```
+
+### Check the length of the dataset.
+```{r}
+length(Vodka$`Invoice/Item Number`)
+
+```
+
+### Previewing the first 5 rows of the dataset.
+```{r}
+head(Vodka$Date)
+```
+
+## Transform the dataset
+```{r}
+# Convert the date column to the date format abnd store it in a new variable.
+Vodka$DATE2 <- as.Date(Vodka$Date,"%m/%d/%Y") 
+```
+
+
+```{r}
+# Previewing the first 5 rows of the new date column.
+head(Vodka$DATE2)
+```
+
+
+```{r}
+# Remove the year 2016 from the dataset because it will affect the analysis.
+# Only the first 6 months was available for 2016.
+Vodka <- subset(Vodka,DATE2 < "2016-01-01")
+
+# Making numeric and removing $ sign
+Vodka$`State Bottle Cost` <- as.numeric(gsub("\\$","",Vodka$`State Bottle Cost`)) 
+Vodka$`State Bottle Retail` <- as.numeric(gsub("\\$","",Vodka$`State Bottle Retail`))
+```
+
+### Check how many row in the dataset is inconsistent.
+```{r}
+nrow(Vodka[!complete.cases(Vodka),])
+```
+
+### Check how many row in the dataset is inconsistent by columns.
+```{r}
+apply(Vodka,2,function(x) sum(is.na(x))) 
+```
+
+### Remove inconsistent data from the dataset.
+```{r}
+Vodka <- na.omit(Vodka)
+```
+
+### Export the dataset for further analysis in Power BI.
+```{r}
+write.csv(Vodka, 'C:\\Users\\Skill\\Desktop\\VodkaDATA.csv')
+```
+
+
